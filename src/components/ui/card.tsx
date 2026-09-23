@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
   description: {
     marginTop: 6,
-    paddingHorizontal: 16,
+    paddingHorizontal: 30,
     color: "#555555",
     fontSize: 15,
     lineHeight: 21,

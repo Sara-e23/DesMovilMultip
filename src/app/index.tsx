@@ -1,7 +1,7 @@
 import { CardItem } from '@/types/CardItem';
 import { useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Card } from '../components/ui/card';
 
 interface APIProduct{
@@ -31,8 +31,8 @@ export default function HomeScreen() {
     try{
       setError(null);
       const response = await fetch(API_URL);
-      if(!response.ok) throw new Error['Error NTTP: $response.state']
-      const data: ApiProduct[] = await response.json();
+      if(!response.ok) throw new Error('Error HTTP: ${response.status}');
+      const data: APIProduct[] = await response.json();
       setCards(data.map(adaptProductToCardItem));
     }catch (err){
       setError (err instanceof Error ? err.message : 'Error desconocido')
@@ -40,13 +40,47 @@ export default function HomeScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  })
+  }, []);
+
+  useEffect(() => {
+    fetchCards();
+  }, [fetchCards]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchCards();
+  };
+
+  if (loading){
+    return(
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#333" />
+        <Text style={styles.message}> Cargando Targetas...</Text>
+      </View>
+    )
+  }
+
+  if (error){
+    return(
+      <View style={styles.centered}>
+        <Text style={styles.errorText}></Text>
+        <Pressable onPress ={fetchCards} style={styles.retryButton}>
+          <Text style={styles.retryText}>Reintentar</Text>
+        </Pressable>  
+      </View>
+    )
+  }
 
   return (
     <FlatList
-      data={MOCK_DATA}
-      keyExtractor={(item: CardItem) => item.id}
+      data={cards}
+      keyExtractor={(item) => item.id}
       contentContainerStyle={styles.listContent}
+      showsVerticalScrollIndicator={false}
+      refreshing={refreshing}
+      onRefresh={onRefresh}{
+        ...<Text style={styles.message}>No hay targetas disponibles</Text>
+      }
       renderItem={({ item }: { item: CardItem }) => (
         <Card
           title={item.title}
@@ -64,7 +98,38 @@ export default function HomeScreen() {
   );
 }
 
-const MOCK_DATA: CardItem[] = [
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  errorText:{
+    color: 'red',
+    marginBottom: 12,
+  },
+  retryButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  retryText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  listContent: {
+    padding: 12,
+  },
+  message: {
+    textAlign: 'center',
+    color: '#666',
+    marginTop: 20,
+  },
+})
+
+/* const MOCK_DATA: CardItem[] = [
   {
     id: '1',
     title: 'Michael Kaiser',
@@ -77,7 +142,7 @@ const MOCK_DATA: CardItem[] = [
     title: 'Rin Itoshi',
     image:
       'https://tse2.mm.bing.net/th/id/OIP.EyoBpzZyBS9iJ1TJBvksWAHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
-    description: 'I only love Rin Itoshi',
+    description: 'I only love Sae Itoshi',
   },
   {
     id: '3',
@@ -87,9 +152,4 @@ const MOCK_DATA: CardItem[] = [
     description: 'I only love KAISER',
   },
 ];
-
-const styles = StyleSheet.create({
-  listContent: {
-    paddingVertical: 16,
-  },
-});
+*/
