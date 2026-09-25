@@ -103,16 +103,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    backgroundColor: '#f5f5',
+    //padding: 16,
   },
   errorText:{
+    fontSize: 16,
     color: 'red',
-    marginBottom: 12,
+    marginBottom: 16,
+    textAlign: 'center',
+    paddingHorizontal: 24
   },
   retryButton: {
     backgroundColor: '#007AFF',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 8,
   },
   retryText: {
@@ -120,12 +124,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   listContent: {
-    padding: 12,
+    padding: 16,
+    gap: 16
   },
   message: {
     textAlign: 'center',
     color: '#666',
-    marginTop: 20,
+    marginTop: 12,
+    fontSize: 16
   },
 })
 
