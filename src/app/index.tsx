@@ -1,7 +1,7 @@
 import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { deleteToken, getToken } from '../utils/TokenStorage';
+import { getToken } from '../utils/TokenStorage';
 
 export default function Index() {
   const [checking, setChecking] = useState(true);
@@ -9,7 +9,6 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     (async () => {
-      await deleteToken(); // Eliminar token al iniciar la aplicación
       const token = await getToken();
       setIsLoggedIn(!!token);
       setChecking(false);
@@ -23,6 +22,6 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
     );
   }
   return isLoggedIn 
-  ? <Redirect href="/(app)" /> 
+  ? <Redirect href="/(app)/details" /> 
   : <Redirect href="/(auth)/login" />;
 }

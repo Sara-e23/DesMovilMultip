@@ -3,6 +3,7 @@ export interface AuthResponse {
 }
 
 export async function login(username: string, password: string): Promise<string> {
+    console.log('LOGIN', username, password);
     const response = await fetch('http://127.0.0.1:8000/api-token-auth/', {
         method: 'POST',
         headers: {
