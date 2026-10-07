@@ -2,24 +2,39 @@ import { CardItem } from '@/types/CardItem';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Card } from '../components/ui/card';
+import { Card } from '../../components/ui/card';
 
 
-interface APIProduct{
+/* interface APIProduct{
   id: number;
   title: string;
   image: string;
   description: string;
+} */
+
+interface DummyProduct {
+  id: number;
+  title: string;
+  image: string;
+  description: string;
+  tumbnail: string;
 }
 
-const adaptProductToCardItem = (p: APIProduct): CardItem => ({
+interface DummyResponse {
+  products: DummyProduct[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
+const adaptProductToCardItem = (p: DummyProduct): CardItem => ({
   id: String(p.id),
   title: p.title,
   image: p.image,
   description: p.description
 });
 
-const API_URL = 'https://fakestoreapi.com/products?limit=10';
+const API_URL = 'https://dummyjson.com/products?limit=10';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -33,8 +48,10 @@ export default function HomeScreen() {
       setError(null);
       const response = await fetch(API_URL);
       if(!response.ok) throw new Error('Error HTTP: ${response.status}');
-      const data: APIProduct[] = await response.json();
-      setCards(data.map(adaptProductToCardItem));
+      const data: DummyResponse = await response.json();
+
+      //setCards(data.products.map(adaptProductToCardItem));
+      const adapted = data.products.map(adaptProductToCardItem);
     }catch (err){
       setError (err instanceof Error ? err.message : 'Error desconocido')
     }finally {

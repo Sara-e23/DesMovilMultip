@@ -1,54 +1,28 @@
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Button, StyleSheet, TextInput, View } from 'react-native';
-import { login } from '../utils/auth';
-import { saveToken } from '../utils/TokenStorage';
+import { Redirect } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { deleteToken, getToken } from '../utils/TokenStorage';
 
-export default function LoginScreen(){
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const router = useRouter();
+export default function Index() {
+  const [checking, setChecking] = useState(true);
+const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const handleLogin = async () => {
-        try{
-            const token = await login(username, password);
-            await saveToken(token);
-            router.replace('/');
-        } catch(error) {
-    console.error('Error al iniciar sesión:', error);
-        }
-    };
+  useEffect(() => {
+    (async () => {
+      await deleteToken(); // Eliminar token al iniciar la aplicación
+      const token = await getToken();
+      setIsLoggedIn(!!token);
+      setChecking(false);
+    }) ();
+  }, []);
+  if (checking) {
     return (
-  <View style={styles.container}>
-    <TextInput
-      placeholder='Usuario'
-      value={username}
-      onChangeText={setUsername}
-      style={styles.input}
-      autoCapitalize='none'
-    />
-    <TextInput
-      placeholder='Contraseña'
-      value={password}
-      onChangeText={setPassword}
-      secureTextEntry
-      style={styles.input}
-    />
-    <Button title="Iniciar Sesión" onPress={handleLogin} />
-  </View>
-  
-);}
-
-
-
-const styles = StyleSheet.create({
-
-  container: { flex: 1, justifyContent: 'center', padding: 24},
-  input:{
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
-})
+  return isLoggedIn 
+  ? <Redirect href="/(app)" /> 
+  : <Redirect href="/(auth)/login" />;
+}
