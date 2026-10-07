@@ -8,13 +8,14 @@ export async function login(username: string, password: string): Promise<string>
         headers: {
             'Content-Type': 'application/json',
         },
+
         body: JSON.stringify({ username, password}),
     });
-
+    console.log('RESPONSE', response);
     if (!response.ok){
         throw new Error ('Credenciales inválidas');
     }
 
-    const data: AuthResponse = await Response.json();
+    const data: AuthResponse = await response.json();
     return data.token;
 }
