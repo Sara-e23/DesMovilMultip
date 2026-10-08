@@ -15,9 +15,8 @@ import { Card } from '../../components/ui/card';
 interface DummyProduct {
   id: number;
   title: string;
-  image: string;
+  thumbnail: string;
   description: string;
-  tumbnail: string;
 }
 
 interface DummyResponse {
@@ -30,7 +29,7 @@ interface DummyResponse {
 const adaptProductToCardItem = (p: DummyProduct): CardItem => ({
   id: String(p.id),
   title: p.title,
-  image: p.image,
+  image: p.thumbnail,
   description: p.description
 });
 
@@ -50,8 +49,8 @@ export default function HomeScreen() {
       if(!response.ok) throw new Error('Error HTTP: ${response.status}');
       const data: DummyResponse = await response.json();
 
-      //setCards(data.products.map(adaptProductToCardItem));
       const adapted = data.products.map(adaptProductToCardItem);
+      setCards(adapted);
     }catch (err){
       setError (err instanceof Error ? err.message : 'Error desconocido')
     }finally {
@@ -96,9 +95,10 @@ export default function HomeScreen() {
       contentContainerStyle={styles.listContent}
       showsVerticalScrollIndicator={false}
       refreshing={refreshing}
-      onRefresh={onRefresh}{
-        ...<Text style={styles.message}>No hay targetas disponibles</Text>
-      }
+      onRefresh={onRefresh}
+      
+      ListEmptyComponent = {<Text style={styles.message}>No hay targetas disponibles</Text>}
+      
       renderItem={({ item }: { item: CardItem }) => (
         <Card
           title={item.title}

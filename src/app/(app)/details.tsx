@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { CardItem } from '../types/CardItem';
+import { CardItem } from '../../types/CardItem';
 
 export default function DetailsScreen() {
     const { item: itemString } = useLocalSearchParams<{ item: string }>();

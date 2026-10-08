@@ -22,6 +22,6 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
     );
   }
   return isLoggedIn 
-  ? <Redirect href="/(app)/details" /> 
+  ? <Redirect href="/(app)/index-pausa" /> 
   : <Redirect href="/(auth)/login" />;
 }
