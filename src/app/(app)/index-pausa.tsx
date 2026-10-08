@@ -1,4 +1,5 @@
 import { CardItem } from '@/types/CardItem';
+import { deleteToken } from '@/utils/TokenStorage';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -41,6 +42,11 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+
+  const handleLogout = async () => {
+    await deleteToken();
+    router.replace('/(auth)/login');
+  };
 
   const fetchCards = useCallback(async () => {
     try{
@@ -89,6 +95,11 @@ export default function HomeScreen() {
   }
 
   return (
+    <>
+    <Pressable onPress={handleLogout}
+    style={styles.logoutButton}>
+      <Text style={styles.logoutText}> Cerrar Sesión </Text>
+    </Pressable>
     <FlatList
       data={cards}
       keyExtractor={(item) => item.id}
@@ -113,10 +124,19 @@ export default function HomeScreen() {
         />
       )}
     />
+    /</>
   );
 }
 
 const styles = StyleSheet.create({
+  logoutButton: {
+    backgroundColor: '#c0392b',
+    paddingVertical: 12,
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
   centered: {
     flex: 1,
     justifyContent: 'center',
@@ -150,6 +170,11 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 12,
     fontSize: 16
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
   },
 })
 
